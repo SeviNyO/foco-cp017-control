@@ -28,14 +28,3 @@ async function controlLuz(action) {
         document.getElementById('log').innerText = `❌ ERROR: Fallo al conectar. Revisa Bluetooth o UUIDs. ${error.name}`;
     }
 }
-
-window.onload = function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const action = urlParams.get('action');
-
-    if (action) {
-        controlLuz(action);
-    } else {
-        document.getElementById('log').innerText = `Esperando comando o botón.`; // <--- Mensaje que ves
-    }
-};
