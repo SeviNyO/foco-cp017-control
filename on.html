@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Encendiendo Foco...</title>
-</head>
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    </head>
 <body>
     <p id="log">Iniciando encendido...</p>
+    
     <script src="script.js"></script> 
     <script>
-        window.onload = function() { controlLuz('ON'); };
+        window.onload = function() {
+            controlLuz('ON');
+        };
     </script>
 </body>
 </html>
