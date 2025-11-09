@@ -4,7 +4,6 @@ const PACKET_ON = new Uint8Array([0xAA, 0x55, 0x00, 0x00, 0x00, 0x01, 0x64, 0x1E
 const PACKET_OFF = new Uint8Array([0xAA, 0x55, 0x00, 0x00, 0x00, 0x00, 0x64, 0x1E, 0x01, 0x99]);
 const DEVICE_NAME_PREFIX = 'CP017'; 
 
-
 async function controlLuz(action) {
     document.getElementById('log').innerText = `Estado: Conectando para ${action}...`; 
     const packet = (action === 'ON') ? PACKET_ON : PACKET_OFF;
@@ -20,12 +19,23 @@ async function controlLuz(action) {
         const server = await device.gatt.connect();
         document.getElementById('log').innerText = `Estado: Conectado. Enviando ${action}...`;
         const service = await server.getPrimaryService(SERVICE_UUID);
-        const characteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
+        const characteristic = await service.getCharacteristic(CHARACTERISTIC_UUID); 
         await characteristic.writeValue(packet);
-        document.getElementById('log').innerText = `Comando ${action} enviado con éxito.`;
+        document.getElementById('log').innerText = `✅ Comando ${action} enviado con éxito.`;
         server.disconnect(); 
     } catch (error){
         console.error('Fallo', error);
-        document.getElementById('log').innerText = `ERROR: Fallo al conectar. Revisa Bluetooth o UUIDs. ${error.name}`;
+        document.getElementById('log').innerText = `❌ ERROR: Fallo al conectar. Revisa Bluetooth o UUIDs. ${error.name}`;
     }
 }
+
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const action = urlParams.get('action');
+
+    if (action) {
+        controlLuz(action);
+    } else {
+        document.getElementById('log').innerText = `Esperando comando o botón.`; // <--- Mensaje que ves
+    }
+};
