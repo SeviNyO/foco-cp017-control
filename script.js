@@ -1,23 +1,29 @@
-const SERVICE_UUID = '0000ffe0-0000-1000-8000-00805f9b34fb';
-const CHARACTERISTIC_UUID = '0000ffe1-0000-1000-8000-00805f9b34fb';
+// Constantes de Control (Servicios que USAMOS)
+const SERVICE_UUID = '0000ffe0-0000-1000-8000-00805f9b34fb'; // FFE0 (Servicio de Control)
+const CHARACTERISTIC_UUID = '0000ffe1-0000-1000-8000-00805f9b34fb'; // FFE1 (Característica de Escribir)
+
+// Constante de Anuncio (Servicio que BUSCAMOS)
+const ADVERTISING_UUID = '0000af30-0000-1000-8000-00805f9b34fb'; // AF30 (El que anuncia)
+
+// Paquetes y Nombre (Esto está bien)
 const PACKET_ON = new Uint8Array([0xAA, 0x55, 0x00, 0x00, 0x00, 0x01, 0x64, 0x1E, 0x01, 0x99]);
 const PACKET_OFF = new Uint8Array([0xAA, 0x55, 0x00, 0x00, 0x00, 0x00, 0x64, 0x1E, 0x01, 0x99]);
-// DEVICE_NAME_PREFIX ya no se usa
 
 async function controlLuz(action) {
     document.getElementById('log').innerText = `Estado: Conectando para ${action}...`; 
     const packet = (action === 'ON') ? PACKET_ON : PACKET_OFF;
     
     try{
-        // --- CAMBIO CLAVE ---
-        // Ya no filtramos por nombre, pedimos que nos muestre TODOS
-        // los dispositivos Bluetooth cercanos.
         document.getElementById('log').innerText = `¡Permiso! Busca y selecciona 'CP017' en la lista...`;
-        
+
+        // --- CAMBIO CLAVE (El Filtro Correcto) ---
         const device = await navigator.bluetooth.requestDevice(
             {
-                acceptAllDevices: true, // <-- Aceptar todos los dispositivos
-                optionalServices: [SERVICE_UUID] // <-- Pero solo nos interesan los que tengan el Servicio FFE0
+                // Filtramos por el servicio que SÍ se anuncia (AF30)
+                filters: [{ services: [ADVERTISING_UUID] }],
+                
+                // Pedimos permiso para USAR el servicio FFE0 (el de control)
+                optionalServices: [SERVICE_UUID] 
             }
         );
         
